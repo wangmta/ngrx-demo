@@ -7,31 +7,30 @@ import { catchError, tap, map } from 'rxjs/operators';
 import { Product } from './product';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ProductService {
   private productsUrl = 'api/products';
   private products: Product[];
 
-  private selectedProductSource = new BehaviorSubject<Product | null>(null);
-  selectedProductChanges$ = this.selectedProductSource.asObservable();
+  private selectedProductSource$ = new BehaviorSubject<Product | null>(null);
+  selectedProductChanges$ = this.selectedProductSource$.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   changeSelectedProduct(selectedProduct: Product | null): void {
-    this.selectedProductSource.next(selectedProduct);
+    this.selectedProductSource$.next(selectedProduct);
   }
 
   getProducts(): Observable<Product[]> {
     if (this.products) {
       return of(this.products);
     }
-    return this.http.get<Product[]>(this.productsUrl)
-      .pipe(
-        tap(data => console.log(JSON.stringify(data))),
-        tap(data => this.products = data),
-        catchError(this.handleError)
-      );
+    return this.http.get<Product[]>(this.productsUrl).pipe(
+      tap(data => console.log(JSON.stringify(data))),
+      tap(data => (this.products = data)),
+      catchError(this.handleError)
+    );
   }
 
   // Return an initialized product
@@ -48,7 +47,8 @@ export class ProductService {
   createProduct(product: Product): Observable<Product> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     product.id = null;
-    return this.http.post<Product>(this.productsUrl, product, { headers: headers })
+    return this.http
+      .post<Product>(this.productsUrl, product, { headers: headers })
       .pipe(
         tap(data => console.log('createProduct: ' + JSON.stringify(data))),
         tap(data => {
@@ -61,7 +61,8 @@ export class ProductService {
   deleteProduct(id: number): Observable<{}> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.productsUrl}/${id}`;
-    return this.http.delete<Product>(url, { headers: headers })
+    return this.http
+      .delete<Product>(url, { headers: headers })
       .pipe(
         tap(data => console.log('deleteProduct: ' + id)),
         tap(data => {
@@ -77,7 +78,8 @@ export class ProductService {
   updateProduct(product: Product): Observable<Product> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.productsUrl}/${product.id}`;
-    return this.http.put<Product>(url, product, { headers: headers })
+    return this.http
+      .put<Product>(url, product, { headers: headers })
       .pipe(
         tap(() => console.log('updateProduct: ' + product.id)),
         // Update the item in the list
@@ -110,5 +112,4 @@ export class ProductService {
     console.error(err);
     return throwError(errorMessage);
   }
-
 }

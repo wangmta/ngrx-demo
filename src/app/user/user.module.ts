@@ -9,18 +9,14 @@ import { LoginComponent } from './login.component';
 import { StoreModule } from '@ngrx/store';
 import { reducer } from './state/user.reducer';
 
-const userRoutes: Routes = [
-  { path: 'login', component: LoginComponent }
-];
+const userRoutes: Routes = [{ path: 'login', component: LoginComponent }];
 
 @NgModule({
   imports: [
     SharedModule,
     RouterModule.forChild(userRoutes),
-    StoreModule.forFeature('users', reducer)
+    StoreModule.forFeature('users', reducer) // feature module level (page level)
   ],
-  declarations: [
-    LoginComponent
-  ]
+  declarations: [LoginComponent]
 })
-export class UserModule { }
+export class UserModule {}

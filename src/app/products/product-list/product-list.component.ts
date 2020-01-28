@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { Product } from '../product';
 import { ProductService } from '../product.service';
 import { Store, select } from '@ngrx/store';
+import * as FromProduct from '../state/product.reducer';
 
 @Component({
   selector: 'pm-product-list',
@@ -23,26 +24,25 @@ export class ProductListComponent implements OnInit, OnDestroy {
   selectedProduct: Product | null;
   sub: Subscription;
 
-  constructor(private store: Store<any>,
-              private productService: ProductService) { }
+  // use the extended state from product.reducer (lazy loaded)
+  constructor(private store: Store<FromProduct.State>, private productService: ProductService) {}
 
   ngOnInit(): void {
     this.sub = this.productService.selectedProductChanges$.subscribe(
-      selectedProduct => this.selectedProduct = selectedProduct
+      selectedProduct => (this.selectedProduct = selectedProduct)
     );
 
     this.productService.getProducts().subscribe(
-      (products: Product[]) => this.products = products,
-      (err: any) => this.errorMessage = err.error
+      (products: Product[]) => (this.products = products),
+      (err: any) => (this.errorMessage = err.error)
     );
 
     // TODO: Unsubscribe
-    this.store.pipe(select('products')).subscribe(
-      products => {
-        if (products) {
-          this.displayCode = products.showProductCode;
-        }
-      });
+    this.store.pipe(select('product')).subscribe(product => {
+      if (product) {
+        this.displayCode = product.showProductCode;
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -63,5 +63,4 @@ export class ProductListComponent implements OnInit, OnDestroy {
   productSelected(product: Product): void {
     this.productService.changeSelectedProduct(product);
   }
-
 }
