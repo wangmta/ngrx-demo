@@ -12,8 +12,15 @@ export interface ProductState {
   products: Product[];
 }
 
+// declare initial value for product state
+const initialState: ProductState = {
+  showProductCode: true,
+  currentProduct: null,
+  products: []
+};
+
 // reducer takes in the original state, the action dispatched by the component, and last return the new state
-export function reducer(state: ProductState, action): ProductState {
+export function reducer(state = initialState, action): ProductState {
   switch (action.type) {
     case 'TOGGLE_PRODUCT_CODE':
       return {
