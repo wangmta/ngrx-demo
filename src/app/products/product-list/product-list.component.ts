@@ -39,9 +39,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
     // TODO: Unsubscribe
     // no need to detect if product is null or not since its initial state is declared in the reducer
+    // without selector
+    // this.store
+    //   .pipe(select('product'))
+    //   .subscribe(product => (this.displayCode = product.showProductCode));
     this.store
-      .pipe(select('product'))
-      .subscribe(product => (this.displayCode = product.showProductCode));
+      .pipe(select(FromProduct.getShowProductCode))
+      .subscribe(showProductCode => (this.displayCode = showProductCode));
   }
 
   ngOnDestroy(): void {

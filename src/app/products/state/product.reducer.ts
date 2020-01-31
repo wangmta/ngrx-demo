@@ -34,10 +34,19 @@ export const getCurrentProduct = createSelector(
   state => state.currentProduct
 );
 
-export const getProducts = createSelector(
-  getProductFeatureState,
-  state => state.products
-);
+export const getProducts = createSelector(getProductFeatureState, state => state.products);
+
+// good selector should consider encapsulation, break down into smaller units as possible
+// demo only
+// export const getCurrentProductId = createSelector(
+//   getProductFeatureState,
+//   state => state.currentProduct.id
+// );
+// export const getCurrentProduct = createSelector(
+//   getProductFeatureState,
+//   getCurrentProductId,
+//   (state, productId) => state.products.find(p=>p.id === productId)
+// );
 
 // reducer takes in the original state, the action dispatched by the component, and last return the new state
 export function reducer(state = initialState, action): ProductState {
